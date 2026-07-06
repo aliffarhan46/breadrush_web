@@ -14,8 +14,8 @@
     <div class="nav-links">
         <a href="{{ route('home') }}">Home</a>
         <a href="{{ route('menu') }}">Menu</a>
-        <a href="chekout.php">Checkout</a>
-        <a href="Tracking.php">Riwayat</a>
+        <a href="{{ route('checkout') }}">Checkout</a>
+        <a href="{{ route('tracking') }}">Riwayat</a>
     </div>
 
     <div class="nav-right">

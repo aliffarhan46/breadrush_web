@@ -17,8 +17,8 @@
     <div class="nav-links">
         <a href="{{ route('home') }}">Home</a>
         <a href="{{ route('menu') }}" class="active">Menu</a>
-        <a href="#">Checkout</a>
-        <a href="#">Riwayat</a>
+        <a href="{{ route('checkout') }}">Checkout</a>
+        <a href="{{ route('tracking') }}">Riwayat</a>
     </div>
 
     <div class="nav-right">
@@ -108,7 +108,7 @@
             <span>Total</span>
             <span id="cartTotal">Rp 0</span>
         </div>
-        <a href="#">
+        <a href="{{ route('checkout') }}">
             <button class="checkout-btn">
                 Checkout Sekarang →
             </button>

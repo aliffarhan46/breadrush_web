@@ -340,13 +340,25 @@ a:hover {
 }
 
 @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 8px 25px rgba(217, 79, 79, 0.3); }
-    50% { box-shadow: 0 8px 40px rgba(217, 79, 79, 0.5); }
+
+    0%,
+    100% {
+        box-shadow: 0 8px 25px rgba(217, 79, 79, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 8px 40px rgba(217, 79, 79, 0.5);
+    }
 }
 
 @keyframes fire-bounce {
-    0% { transform: translateY(0) rotate(-5deg); }
-    100% { transform: translateY(-3px) rotate(5deg); }
+    0% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    100% {
+        transform: translateY(-3px) rotate(5deg);
+    }
 }
 
 /* =======================
@@ -484,7 +496,7 @@ a:hover {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(6px);
     border: none;
     cursor: pointer;
@@ -498,7 +510,7 @@ a:hover {
 
 .fav-btn:hover {
     transform: scale(1.15);
-    background: rgba(255,255,255,1);
+    background: rgba(255, 255, 255, 1);
 }
 
 .fav-btn.liked {
@@ -507,9 +519,17 @@ a:hover {
 }
 
 @keyframes heart-pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.35); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.35);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Card Content */
@@ -755,8 +775,15 @@ a:hover {
 }
 
 @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .cart-item-img {
@@ -1035,12 +1062,15 @@ a:hover {
     .navbar {
         padding: 0 3%;
     }
+
     .menu-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .footer {
         grid-template-columns: 1fr 1fr;
     }
+
     .menu-hero h1 {
         font-size: 34px;
     }
@@ -1053,51 +1083,64 @@ a:hover {
         flex-direction: column;
         gap: 15px;
     }
+
     .nav-links {
         gap: 20px;
     }
+
     .nav-right {
         width: 100%;
         justify-content: space-between;
     }
+
     .nav-right input[type="text"]:focus {
         width: 100%;
     }
+
     .menu-hero {
         margin-top: 160px;
         padding: 40px 20px 30px;
     }
+
     .menu-hero h1 {
         font-size: 28px;
     }
+
     .menu-hero .subtitle {
         font-size: 15px;
     }
+
     .promo-banner {
         font-size: 14px;
         padding: 12px 20px;
     }
+
     .filter-section {
         flex-direction: column;
         align-items: stretch;
     }
+
     .filter-tabs {
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 4px;
     }
+
     .menu-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
+
     .cart-sidebar {
         width: 100%;
         max-width: 100vw;
     }
+
     .footer {
         grid-template-columns: 1fr;
         padding: 50px 20px 30px;
     }
+
     .footer input[type="email"] {
         max-width: 100%;
     }
@@ -1107,9 +1150,11 @@ a:hover {
     .menu-hero h1 {
         font-size: 24px;
     }
+
     .product-name {
         font-size: 17px;
     }
+
     .price-final {
         font-size: 19px;
     }

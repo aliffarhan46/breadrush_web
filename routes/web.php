@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\OrderController;
+
 Route::get('/', function () {
     return redirect()->route('register');
 });
@@ -23,3 +25,16 @@ Route::get('/home', function () {
 Route::get('/menu', function () {
     return view('menu');
 })->middleware('auth')->name('menu');
+
+Route::get('/checkout', function () {
+    return view('checkout');
+})->middleware('auth')->name('checkout');
+
+Route::get('/payment', function () {
+    return view('payment');
+})->middleware('auth')->name('payment');
+
+Route::post('/payment/submit', [OrderController::class, 'store'])->middleware('auth')->name('payment.submit');
+Route::get('/tracking/{id?}', [OrderController::class, 'showTracking'])->middleware('auth')->name('tracking');
+
+
