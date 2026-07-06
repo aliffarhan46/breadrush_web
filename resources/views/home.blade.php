@@ -13,7 +13,7 @@
 
     <div class="nav-links">
         <a href="{{ route('home') }}">Home</a>
-        <a href="menu inject operator.php">Menu</a>
+        <a href="{{ route('menu') }}">Menu</a>
         <a href="chekout.php">Checkout</a>
         <a href="Tracking.php">Riwayat</a>
     </div>
