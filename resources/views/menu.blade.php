@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<!-- ====== NAVBAR ====== -->
 <div class="navbar">
     <b>BreadRush</b>
 
@@ -50,10 +49,13 @@
         Temukan pilihan roti premium yang fresh dari oven setiap hari. 
         Dibuat dengan bahan terbaik untuk cita rasa yang tak terlupakan.
     </p>
-    <div class="promo-banner" id="promoBanner">
+    <div class="promo-banner" id="promoBanner" style="display: none;">
         <span class="fire-icon">🔥</span>
-        Diskon 35% untuk semua menu!
+        <span id="promoBannerText">Diskon 35% untuk semua menu!</span>
         <span class="fire-icon">🔥</span>
+    </div>
+    <div id="promoOffBanner" class="promo-banner" style="display: none; background: linear-gradient(135deg, #7f8c8d, #95a5a6); animation: none;">
+        ⏰ Diskon 35% tersedia setiap hari pukul 21.00–22.30 WIB
     </div>
 </div>
 
@@ -137,9 +139,9 @@
 
     <div>
         <b>BANTUAN</b>
-        <p><a href="#">Pusat Bantuan</a></p>
-        <p><a href="#">Cek Pengiriman Order</a></p>
-        <p><a href="#">Hubungi Kami</a></p>
+        <p><a href="{{ route('menu') }}">Pusat Bantuan</a></p>
+        <p><a href="{{ route('tracking') }}">Cek Pengiriman Order</a></p>
+        <p><a href="mailto:breadrush@gmail.com">Hubungi Kami</a></p>
     </div>
 
     <div>
@@ -208,11 +210,24 @@ const produkList = [
 ];
 
 /* =======================
-   PROMO CONFIG
+   PROMO CONFIG (Time-based: 21:00-22:30 WIB)
 ======================= */
 const diskonPersen = 35;
 const diskon = diskonPersen / 100;
-const isPromo = true;
+
+function checkIsPromoTime() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wib = new Date(utc + (7 * 3600000));
+    const hours = wib.getHours();
+    const minutes = wib.getMinutes();
+    const currentMinutes = hours * 60 + minutes;
+    const promoStart = 21 * 60;    // 21:00
+    const promoEnd = 22 * 60 + 30; // 22:30
+    return currentMinutes >= promoStart && currentMinutes < promoEnd;
+}
+
+const isPromo = checkIsPromoTime();
 
 /* =======================
    STATE
@@ -530,7 +545,35 @@ toggle.addEventListener("click", () => {
 /* =======================
    INIT
 ======================= */
-renderProducts(produkList);
+const urlParams = new URLSearchParams(window.location.search);
+const categoryParam = urlParams.get('category');
+const searchParam = urlParams.get('search');
+
+// Show/hide promo banner based on time
+if (isPromo) {
+    document.getElementById('promoBanner').style.display = 'flex';
+    document.getElementById('promoOffBanner').style.display = 'none';
+} else {
+    document.getElementById('promoBanner').style.display = 'none';
+    document.getElementById('promoOffBanner').style.display = 'flex';
+}
+
+// Handle search from home page
+if (searchParam) {
+    document.getElementById('searchInput').value = searchParam;
+    filterProducts();
+} else if (categoryParam) {
+    const tabBtn = Array.from(document.querySelectorAll('.filter-tab')).find(btn => {
+        return btn.getAttribute('onclick').includes(`'${categoryParam}'`);
+    });
+    if (tabBtn) {
+        setFilter(categoryParam, tabBtn);
+    } else {
+        renderProducts(produkList);
+    }
+} else {
+    renderProducts(produkList);
+}
 updateCartUI();
 </script>
 

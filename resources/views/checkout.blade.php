@@ -185,9 +185,22 @@ const produkList = [
     }
 ];
 
-const isPromo = true;
 const diskonPersen = 35;
 const diskon = diskonPersen / 100;
+
+function checkIsPromoTime() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wib = new Date(utc + (7 * 3600000));
+    const hours = wib.getHours();
+    const minutes = wib.getMinutes();
+    const currentMinutes = hours * 60 + minutes;
+    const promoStart = 21 * 60;    // 21:00
+    const promoEnd = 22 * 60 + 30; // 22:30
+    return currentMinutes >= promoStart && currentMinutes < promoEnd;
+}
+
+const isPromo = checkIsPromoTime();
 
 // State Promo Code
 let appliedPromoCode = null;
