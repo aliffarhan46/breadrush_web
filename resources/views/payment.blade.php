@@ -737,10 +737,7 @@ function submitPayment() {
         if (data.success) {
             // Clear cart
             localStorage.removeItem('breadrushCart');
-            showToast('🎉', 'Pembayaran berhasil! Mengarahkan ke tracking...');
-            setTimeout(() => {
-                window.location.href = '/tracking/' + data.id;
-            }, 1500);
+            window.location.href = '{{ url("/tracking") }}/' + data.id;
         } else {
             throw new Error('Pembayaran gagal');
         }
