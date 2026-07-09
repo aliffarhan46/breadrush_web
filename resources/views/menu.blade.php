@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pilih menu roti premium BreadRush dengan diskon spesial 35%. Cinnamon Roll, Roti Strawberry Cream, dan lainnya.">
     <title>Menu - BreadRush</title>
-    <link rel="stylesheet" href="{{ asset('stylemenu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/stylemenu.css') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>

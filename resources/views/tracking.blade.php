@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lacak status pesanan roti premium BreadRush Anda secara real-time.">
     <title>Tracking Pesanan - BreadRush</title>
-    <link rel="stylesheet" href="{{ asset('stylecheckout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/stylecheckout.css') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <style>
         /* ====== TRACKING PAGE ====== */

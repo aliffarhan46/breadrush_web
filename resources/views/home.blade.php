@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - BreadRush</title>
-    <link rel="stylesheet" href="{{ asset('stylehome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/stylehome.css') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <style>
         /* Toast notification */
