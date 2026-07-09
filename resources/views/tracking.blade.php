@@ -558,5 +558,7 @@ toggle.addEventListener("click", () => {
 });
 </script>
 
+@include('academic_footer')
+
 </body>
 </html>

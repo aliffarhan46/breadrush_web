@@ -124,35 +124,6 @@
     <span id="toastMsg">Produk ditambahkan!</span>
 </div>
 
-<!-- ====== FOOTER ====== -->
-<div class="footer">
-    <div>
-        <h3>BreadRush</h3>
-        <p>Tempat cita rasa premium dan kehangatan gaya hidup modern bertemu.</p>
-    </div>
-
-    <div>
-        <b>KONTAK KAMI</b>
-        <p>📞 081574844308</p>
-        <p>✉️ breadrush@gmail.com</p>
-    </div>
-
-    <div>
-        <b>BANTUAN</b>
-        <p><a href="{{ route('menu') }}">Pusat Bantuan</a></p>
-        <p><a href="{{ route('tracking') }}">Cek Pengiriman Order</a></p>
-        <p><a href="mailto:breadrush@gmail.com">Hubungi Kami</a></p>
-    </div>
-
-    <div>
-        <b>Ikuti Kami</b>
-        <p>Dapatkan update promo terbaru dari oven kami:</p>
-        <div style="margin-top: 10px;">
-            <input type="email" placeholder="Alamat Email Anda" aria-label="Email Newsletter">
-            <button type="button">Subscribe</button>
-        </div>
-    </div>
-</div>
 
 <script>
 /* =======================
@@ -576,6 +547,8 @@ if (searchParam) {
 }
 updateCartUI();
 </script>
+
+@include('academic_footer')
 
 @if (session('alert_success'))
     <script>

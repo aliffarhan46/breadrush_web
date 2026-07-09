@@ -483,5 +483,7 @@ toggle.addEventListener("click", () => {
 renderCheckout();
 </script>
 
+@include('academic_footer')
+
 </body>
 </html>
