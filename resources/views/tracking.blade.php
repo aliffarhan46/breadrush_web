@@ -454,7 +454,13 @@
                     <div class="step-label">{{ $step['label'] }}</div>
                     <div class="step-time">
                         @if($num <= $currentStep)
-                            {{ $tracking->updated_at ? $tracking->updated_at->format('H:i') : '--:--' }}
+                            @if($tracking->updated_at)
+                                <span class="realtime-time" data-base-ms="{{ $tracking->updated_at->timestamp * 1000 }}">
+                                    {{ $tracking->updated_at->format('H:i') }}
+                                </span>
+                            @else
+                                --:--
+                            @endif
                         @else
                             Menunggu...
                         @endif
@@ -484,7 +490,13 @@
             <div class="detail-block">
                 <div class="detail-label">Tanggal Pesanan</div>
                 <div class="detail-value" style="font-size: 14px;">
-                    {{ $tracking->created_at ? $tracking->created_at->format('d M Y, H:i') : '-' }}
+                    @if($tracking->created_at)
+                        <span class="realtime-time" data-base-ms="{{ $tracking->created_at->timestamp * 1000 }}">
+                            {{ $tracking->created_at->format('d M Y, H:i') }}
+                        </span>
+                    @else
+                        -
+                    @endif
                 </div>
             </div>
         </div>
@@ -556,6 +568,28 @@ toggle.addEventListener("click", () => {
     localStorage.setItem("theme", dark ? "dark" : "light");
     toggle.innerText = dark ? "☀️" : "🌙";
 });
+
+/* ====== FORMAT SERVER TIMES ONCE ====== */
+(function() {
+    const nodes = Array.from(document.querySelectorAll('.realtime-time'));
+    if (!nodes.length) return;
+
+    nodes.forEach(el => {
+        const baseMs = parseInt(el.getAttribute('data-base-ms') || '0', 10);
+        if (!baseMs) return;
+        const t = new Date(baseMs);
+        const original = el.textContent || '';
+        const showFull = original.includes(',');
+        if (showFull) {
+            el.textContent = t.toLocaleString('id-ID', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } else {
+            el.textContent = t.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+    });
+})();
 </script>
 
 @include('academic_footer')

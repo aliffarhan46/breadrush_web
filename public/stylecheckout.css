@@ -210,6 +210,51 @@ a:hover {
     border-color: var(--accent-primary);
 }
 
+/* Ensure cart button in navbar matches other pages */
+.nav-cart-btn {
+    font-size: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.nav-cart-btn:hover {
+    background-color: var(--accent-soft);
+    transform: scale(1.08);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: var(--promo-red);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.cart-badge.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
 /* =======================
    PAGE HEADER
 ======================= */
@@ -545,9 +590,17 @@ body.dark .remove-btn:hover {
 }
 
 .cart-empty-state .empty-icon {
-    font-size: 70px;
-    margin-bottom: 20px;
-    opacity: 0.6;
+    width: 72px;
+    height: 72px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 32px;
+    margin: 0 auto 20px;
+    opacity: 0.95;
 }
 
 .cart-empty-state h3 {

@@ -176,6 +176,8 @@
             border-radius: var(--radius-sm);
             border: 4px solid var(--bg-secondary);
             box-shadow: 0 4px 15px var(--shadow-color);
+            margin: 0 auto;
+            display: block;
         }
 
         .qris-label {
@@ -223,6 +225,9 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
             transform: scale(0.85) translateY(20px);
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .qris-overlay.open .qris-modal { transform: scale(1) translateY(0); }
@@ -248,7 +253,8 @@
             border-radius: var(--radius-md);
             border: 3px solid var(--border-color);
             box-shadow: 0 6px 20px var(--shadow-color);
-            margin-bottom: 16px;
+            margin: 0 auto 16px;
+            display: block;
         }
 
         .qris-modal-total {

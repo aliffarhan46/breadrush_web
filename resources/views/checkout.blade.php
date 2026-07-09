@@ -22,7 +22,7 @@
     </div>
 
     <div class="nav-right">
-        <button class="nav-cart-btn" aria-label="Keranjang Belanja" style="cursor: default; position: relative;">
+        <button class="nav-cart-btn" aria-label="Keranjang Belanja">
             🛒
             <span class="cart-badge" id="cartBadge">0</span>
         </button>
@@ -227,6 +227,7 @@ function renderCheckout() {
     // Update badge navbar
     const totalItems = cart.reduce((sum, c) => sum + c.qty, 0);
     cartBadge.textContent = totalItems;
+    if (totalItems > 0) cartBadge.classList.add('visible'); else cartBadge.classList.remove('visible');
     itemCountBadge.textContent = totalItems + ' Item';
 
     if (cart.length === 0) {
