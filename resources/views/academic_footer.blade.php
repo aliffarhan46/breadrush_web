@@ -88,7 +88,7 @@
 </style>
 <div class="academic-footer">
     <div class="academic-footer-content">
-        <div class="group-title">Kelompok 3 Pemrograman Web KH001</div>
+        <div class="group-title">Kelompok 3 MK Pemrograman Web KH001</div>
         
         <div class="group-members">
             <div class="member-card">
@@ -106,8 +106,9 @@
         </div>
 
         <div class="academic-info">
-            <p>Dosen Pengampu Mata Kuliah: Dewi Setiowati, A.Md., S.Pd., M.Tr.Kom.</p>
+            <p><strong>Dosen Pengampu Mata Kuliah: Dewi Setiowati, A.Md., S.Pd., M.Tr.Kom.</strong></p>
             <p>Tahun Akademik 2025/2026 Genap</p>
+            <p>Domain: https://breadrush.wuaze.com/</p>
         </div>
     </div>
 </div>
