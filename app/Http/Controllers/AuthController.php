@@ -35,17 +35,14 @@ class AuthController extends Controller
         }
 
         // Simpan user
-        $user = User::create([
+        User::create([
             'nama' => $nama,
             'email' => $email,
             'password_users' => Hash::make($password),
         ]);
 
-        // Login user
-        Auth::login($user);
-
-        // Alert sukses
-        return redirect()->route('home')->with('alert_success', 'Pendaftaran berhasil!');
+        // Jangan login otomatis; arahkan ke login untuk keamanan
+        return redirect()->route('login')->with('alert_success', 'Pendaftaran berhasil! Silakan login terlebih dahulu.');
     }
 
     public function googleRegister(Request $request)
@@ -59,10 +56,8 @@ class AuthController extends Controller
             return redirect()->route('register')->with('alert', 'Pilihan tidak valid!');
         }
 
-        // Cek email sudah ada atau belum
         $user = User::where('email', $email)->first();
 
-        // Jika belum ada → simpan
         if (!$user) {
             $user = User::create([
                 'nama' => $nama,
@@ -75,10 +70,7 @@ class AuthController extends Controller
             $user->save();
         }
 
-        // Login user
-        Auth::login($user);
-
-        return redirect()->route('home')->with('alert_success', 'Login Google berhasil!');
+        return redirect()->route('login')->with('alert_success', 'Akun Google berhasil disiapkan. Silakan login terlebih dahulu.');
     }
 
     public function googleLogin(Request $request)
@@ -100,11 +92,8 @@ class AuthController extends Controller
                 $user->foto_profile = $avatar;
                 $user->save();
             }
-            // Login user
-            Auth::login($user);
-            return redirect()->route('home')->with('alert_success', 'Login Google berhasil!');
+            return redirect()->route('login')->with('alert_success', 'Akun Google sudah terdaftar. Silakan login terlebih dahulu.');
         } else {
-            // Jika belum ada, mari daftarkan otomatis agar UX lebih mulus
             if (!empty($nama)) {
                 $user = User::create([
                     'nama' => $nama,
@@ -112,8 +101,7 @@ class AuthController extends Controller
                     'password_users' => Hash::make($password ?? 'admin123'),
                     'foto_profile' => $avatar,
                 ]);
-                Auth::login($user);
-                return redirect()->route('home')->with('alert_success', 'Login Google berhasil!');
+                return redirect()->route('login')->with('alert_success', 'Akun Google berhasil dibuat. Silakan login terlebih dahulu.');
             }
             return redirect()->route('login')->with('alert', 'Akun Google tidak ditemukan!');
         }

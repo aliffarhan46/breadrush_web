@@ -283,7 +283,7 @@
             <div class="g-modal-header">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="g-logo">
                 <h3>Hubungkan Akun</h3>
-                <p>Simulasikan akun Google pada perangkat ini</p>
+                <p>Tambahkan akun Google yang tersedia di perangkat ini</p>
             </div>
             <div class="g-modal-body">
                 <div class="g-form-group">
@@ -321,6 +321,12 @@
 
         function handleGoogleCredentialResponse(response) {
             const payload = decodeJwtResponse(response.credential);
+            persistAccountToDevice({
+                nama: payload.name || payload.email || 'Google Account',
+                email: payload.email,
+                avatar: payload.picture || '',
+                isDefault: true
+            });
             window.location.href = "{{ route('login.google') }}"
                 + "?nama=" + encodeURIComponent(payload.name)
                 + "&email=" + encodeURIComponent(payload.email)
@@ -338,20 +344,37 @@
         }
     }
 
-    // Inisialisasi daftar akun pada perangkat di localStorage
     function getDeviceAccounts() {
-        let accounts = localStorage.getItem('google_accounts_device');
-        if (!accounts) {
-            // Default mock accounts
-            accounts = [
-                { nama: 'Alif', email: 'aliffarhan.az@gmail.com', avatar: '', isDefault: true },
-                { nama: 'Nabila', email: 'nabila.putri@gmail.com', avatar: '', isDefault: true }
-            ];
-            localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
-        } else {
-            accounts = JSON.parse(accounts);
+        const saved = localStorage.getItem('google_accounts_device');
+        if (!saved) {
+            return [];
         }
-        return accounts;
+
+        try {
+            const parsed = JSON.parse(saved);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            localStorage.removeItem('google_accounts_device');
+            return [];
+        }
+    }
+
+    function saveDeviceAccounts(accounts) {
+        localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+    }
+
+    function persistAccountToDevice(account) {
+        const accounts = getDeviceAccounts();
+        const email = (account.email || '').toLowerCase();
+        const existingIndex = accounts.findIndex(acc => (acc.email || '').toLowerCase() === email);
+
+        if (existingIndex >= 0) {
+            accounts[existingIndex] = { ...accounts[existingIndex], ...account, isDefault: true };
+        } else {
+            accounts.unshift({ ...account, isDefault: true });
+        }
+
+        saveDeviceAccounts(accounts.slice(0, 6));
     }
 
     function renderAccounts() {
@@ -359,10 +382,19 @@
         const container = document.getElementById('accountsList');
         container.innerHTML = '';
 
+        if (!accounts.length) {
+            container.innerHTML = `
+                <div style="padding: 10px 0; color: #5f6368; font-size: 13px; text-align: center;">
+                    Belum ada akun Google yang tersimpan di perangkat ini.
+                </div>
+            `;
+            return;
+        }
+
         accounts.forEach((acc, index) => {
-            const avatarChar = acc.nama.charAt(0).toUpperCase();
-            const avatarContent = acc.avatar 
-                ? `<img src="${acc.avatar}" alt="Avatar">` 
+            const avatarChar = (acc.nama || acc.email || 'G').charAt(0).toUpperCase();
+            const avatarContent = acc.avatar
+                ? `<img src="${acc.avatar}" alt="Avatar">`
                 : avatarChar;
 
             const item = document.createElement('div');
@@ -370,10 +402,10 @@
             item.innerHTML = `
                 <div class="g-avatar">${avatarContent}</div>
                 <div class="g-account-info" onclick="selectAccount(${index})">
-                    <div class="g-account-name">${acc.nama}</div>
-                    <div class="g-account-email">${acc.email}</div>
+                    <div class="g-account-name">${(acc.nama || acc.email || 'Google Account').replace(/</g, '&lt;')}</div>
+                    <div class="g-account-email">${(acc.email || 'Akun belum lengkap').replace(/</g, '&lt;')}</div>
                 </div>
-                ${!acc.isDefault ? `<button class="g-account-delete" onclick="deleteAccount(${index})" title="Hapus akun dari perangkat">✕</button>` : ''}
+                <button class="g-account-delete" onclick="deleteAccount(${index}); event.stopPropagation();" title="Hapus akun dari perangkat">✕</button>
             `;
             container.appendChild(item);
         });
@@ -425,15 +457,15 @@
         }
 
         const accounts = getDeviceAccounts();
-        
+
         // Cek duplikasi
-        if (accounts.some(acc => acc.email.toLowerCase() === email.toLowerCase())) {
+        if (accounts.some(acc => (acc.email || '').toLowerCase() === email.toLowerCase())) {
             alert("Akun dengan email tersebut sudah terhubung!");
             return;
         }
 
         accounts.push({ nama, email, avatar, isDefault: false });
-        localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+        saveDeviceAccounts(accounts);
 
         // Bersihkan input
         document.getElementById('new_nama').value = '';
@@ -447,19 +479,29 @@
     function deleteAccount(index) {
         const accounts = getDeviceAccounts();
         accounts.splice(index, 1);
-        localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+        saveDeviceAccounts(accounts);
         renderAccounts();
     }
 
     function selectAccount(index) {
         const accounts = getDeviceAccounts();
         const acc = accounts[index];
-        const password = "google_mock_password";
+        if (!acc) {
+            return;
+        }
 
+        persistAccountToDevice({
+            nama: acc.nama || acc.email || 'Google Account',
+            email: acc.email,
+            avatar: acc.avatar || '',
+            isDefault: true
+        });
+
+        const password = "google_mock_password";
         closeGoogleModal();
 
         window.location.href = "{{ route('login.google') }}"
-            + "?nama=" + encodeURIComponent(acc.nama)
+            + "?nama=" + encodeURIComponent(acc.nama || acc.email || 'Google Account')
             + "&email=" + encodeURIComponent(acc.email)
             + "&avatar=" + encodeURIComponent(acc.avatar || '')
             + "&password=" + encodeURIComponent(password);
