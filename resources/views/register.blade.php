@@ -7,6 +7,195 @@
     <title>BreadRush - Register</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
+    
+    @if(env('GOOGLE_CLIENT_ID'))
+        <!-- Load Google Identity Services SDK -->
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+    @endif
+
+    <style>
+        /* Google Account Chooser Modal Styling */
+        .g-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+        .g-modal-content {
+            background-color: #ffffff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            padding: 30px 24px;
+            animation: gModalOpen 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Outfit', sans-serif;
+        }
+        @keyframes gModalOpen {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .g-logo {
+            width: 32px;
+            height: 32px;
+            display: block;
+            margin: 0 auto 12px;
+        }
+        .g-modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .g-modal-header h3 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 4px;
+            margin-top: 0;
+        }
+        .g-modal-header p {
+            font-size: 14px;
+            color: #5f6368;
+            margin: 0;
+        }
+        .g-modal-body {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+        .g-account-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+        .g-account-item:hover {
+            background-color: #f8f9fa;
+        }
+        .g-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #8b5e3c;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .g-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .g-account-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .g-account-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #3c4043;
+        }
+        .g-account-email {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        .g-account-delete {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #dadce0;
+            padding: 6px;
+            transition: color 0.2s;
+        }
+        .g-account-delete:hover {
+            color: #ea4335;
+        }
+        .g-modal-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .g-btn-add, .g-btn-submit {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: background-color 0.2s;
+        }
+        .g-btn-add:hover {
+            background-color: #f8f9fa;
+        }
+        .g-btn-submit {
+            background-color: #1a73e8;
+            color: #ffffff;
+            border: none;
+        }
+        .g-btn-submit:hover {
+            background-color: #1557b0;
+        }
+        .g-btn-cancel {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: transparent;
+            color: #5f6368;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+        .g-btn-cancel:hover {
+            color: #202124;
+        }
+        .g-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .g-form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #3c4043;
+        }
+        .g-form-group input {
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Outfit', sans-serif;
+        }
+        .g-form-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+    </style>
 </head>
 <body>
 
@@ -73,36 +262,220 @@
         </script>
     @endif
 
+    <!-- Google Account Chooser Modal (Fallback) -->
+    <div id="googleModal" class="g-modal">
+        <div class="g-modal-content">
+            <div class="g-modal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="g-logo">
+                <h3>Pilih akun</h3>
+                <p>untuk melanjutkan ke BreadRush</p>
+            </div>
+            <div class="g-modal-body" id="accountsList">
+                <!-- Akun Google pada perangkat akan dimuat di sini -->
+            </div>
+            <div class="g-modal-footer">
+                <button class="g-btn-add" onclick="showAddAccountForm()">Gunakan akun lain</button>
+                <button class="g-btn-cancel" onclick="closeGoogleModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambahkan Akun Baru ke Perangkat -->
+    <div id="addAccountModal" class="g-modal">
+        <div class="g-modal-content">
+            <div class="g-modal-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="g-logo">
+                <h3>Hubungkan Akun</h3>
+                <p>Simulasikan akun Google pada perangkat ini</p>
+            </div>
+            <div class="g-modal-body">
+                <div class="g-form-group">
+                    <label for="new_nama">Nama Lengkap</label>
+                    <input type="text" id="new_nama" placeholder="Contoh: Alif Farhan">
+                </div>
+                <div class="g-form-group">
+                    <label for="new_email">Email Gmail</label>
+                    <input type="email" id="new_email" placeholder="contoh@gmail.com">
+                </div>
+                <div class="g-form-group">
+                    <label for="new_avatar">Link Foto Profil (Opsional)</label>
+                    <input type="text" id="new_avatar" placeholder="https://example.com/foto.jpg">
+                </div>
+            </div>
+            <div class="g-modal-footer">
+                <button class="g-btn-submit" onclick="saveNewAccount()">Hubungkan Akun</button>
+                <button class="g-btn-cancel" onclick="hideAddAccountForm()">Kembali</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+    // Ambil client_id jika dikonfigurasi
+    const googleClientId = "{{ env('GOOGLE_CLIENT_ID') }}";
 
-    function googleLogin(){
-        let pilihan = prompt(
-            "Pilih akun Google:\n\n1. aliffarhan.az@gmail.com\n2. nabila.putri@gmail.com"
-        );
-
-        let nama = "";
-        let email = "";
-        let password = "admin123";
-
-        // Akun 1
-        if(pilihan == "1"){
-            nama = "Alif";
-            email = "aliffarhan.az@gmail.com";
+    // Setup GIS jika Client ID tersedia
+    if (googleClientId) {
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: googleClientId,
+                callback: handleGoogleCredentialResponse
+            });
         }
-        // Akun 2
-        else if(pilihan == "2"){
-            nama = "Nabila";
-            email = "nabila.putri@gmail.com";
+
+        function handleGoogleCredentialResponse(response) {
+            const payload = decodeJwtResponse(response.credential);
+            window.location.href = "{{ route('register.google') }}"
+                + "?nama=" + encodeURIComponent(payload.name)
+                + "&email=" + encodeURIComponent(payload.email)
+                + "&avatar=" + encodeURIComponent(payload.picture)
+                + "&password=" + encodeURIComponent("google_oauth_" + payload.sub);
         }
-        // Salah input
-        else {
-            alert("Pilihan tidak valid!");
+
+        function decodeJwtResponse(token) {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+    }
+
+    // Inisialisasi daftar akun pada perangkat di localStorage
+    function getDeviceAccounts() {
+        let accounts = localStorage.getItem('google_accounts_device');
+        if (!accounts) {
+            // Default mock accounts
+            accounts = [
+                { nama: 'Alif', email: 'aliffarhan.az@gmail.com', avatar: '', isDefault: true },
+                { nama: 'Nabila', email: 'nabila.putri@gmail.com', avatar: '', isDefault: true }
+            ];
+            localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+        } else {
+            accounts = JSON.parse(accounts);
+        }
+        return accounts;
+    }
+
+    function renderAccounts() {
+        const accounts = getDeviceAccounts();
+        const container = document.getElementById('accountsList');
+        container.innerHTML = '';
+
+        accounts.forEach((acc, index) => {
+            const avatarChar = acc.nama.charAt(0).toUpperCase();
+            const avatarContent = acc.avatar 
+                ? `<img src="${acc.avatar}" alt="Avatar">` 
+                : avatarChar;
+
+            const item = document.createElement('div');
+            item.className = 'g-account-item';
+            item.innerHTML = `
+                <div class="g-avatar">${avatarContent}</div>
+                <div class="g-account-info" onclick="selectAccount(${index})">
+                    <div class="g-account-name">${acc.nama}</div>
+                    <div class="g-account-email">${acc.email}</div>
+                </div>
+                ${!acc.isDefault ? `<button class="g-account-delete" onclick="deleteAccount(${index})" title="Hapus akun dari perangkat">✕</button>` : ''}
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function googleLogin() {
+        if (googleClientId) {
+            google.accounts.id.prompt();
+        } else {
+            document.getElementById('googleModal').style.display = 'flex';
+            renderAccounts();
+        }
+    }
+
+    function closeGoogleModal() {
+        document.getElementById('googleModal').style.display = 'none';
+    }
+
+    document.querySelector('.google-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        googleLogin();
+    });
+
+    function showAddAccountForm() {
+        document.getElementById('googleModal').style.display = 'none';
+        document.getElementById('addAccountModal').style.display = 'flex';
+    }
+
+    // Tutup modal jika klik di luar box
+    window.onclick = function(event) {
+        const gModal = document.getElementById('googleModal');
+        const addModal = document.getElementById('addAccountModal');
+        if (event.target === gModal) {
+            closeGoogleModal();
+        }
+        if (event.target === addModal) {
+            hideAddAccountForm();
+            closeGoogleModal();
+        }
+    }
+
+    function hideAddAccountForm() {
+        document.getElementById('addAccountModal').style.display = 'none';
+        document.getElementById('googleModal').style.display = 'flex';
+    }
+
+    function saveNewAccount() {
+        const nama = document.getElementById('new_nama').value.trim();
+        const email = document.getElementById('new_email').value.trim();
+        const avatar = document.getElementById('new_avatar').value.trim();
+
+        if (!nama || !email) {
+            alert("Nama dan Email wajib diisi!");
             return;
         }
 
+        if (!email.endsWith("@gmail.com")) {
+            alert("Email harus berupa alamat @gmail.com!");
+            return;
+        }
+
+        const accounts = getDeviceAccounts();
+        
+        // Cek duplikasi
+        if (accounts.some(acc => acc.email.toLowerCase() === email.toLowerCase())) {
+            alert("Akun dengan email tersebut sudah terhubung!");
+            return;
+        }
+
+        accounts.push({ nama, email, avatar, isDefault: false });
+        localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+
+        // Bersihkan input
+        document.getElementById('new_nama').value = '';
+        document.getElementById('new_email').value = '';
+        document.getElementById('new_avatar').value = '';
+
+        hideAddAccountForm();
+        renderAccounts();
+    }
+
+    function deleteAccount(index) {
+        const accounts = getDeviceAccounts();
+        accounts.splice(index, 1);
+        localStorage.setItem('google_accounts_device', JSON.stringify(accounts));
+        renderAccounts();
+    }
+
+    function selectAccount(index) {
+        const accounts = getDeviceAccounts();
+        const acc = accounts[index];
+        const password = "google_mock_password";
+
+        closeGoogleModal();
+
         window.location.href = "{{ route('register.google') }}"
-            + "?nama=" + encodeURIComponent(nama)
-            + "&email=" + encodeURIComponent(email)
+            + "?nama=" + encodeURIComponent(acc.nama)
+            + "&email=" + encodeURIComponent(acc.email)
+            + "&avatar=" + encodeURIComponent(acc.avatar || '')
             + "&password=" + encodeURIComponent(password);
     }
     </script>

@@ -34,7 +34,11 @@ Route::get('/payment', function () {
     return view('payment');
 })->middleware('auth')->name('payment');
 
+use App\Http\Controllers\ProfileController;
+
 Route::post('/payment/submit', [OrderController::class, 'store'])->middleware('auth')->name('payment.submit');
 Route::get('/tracking/{id?}', [OrderController::class, 'showTracking'])->middleware('auth')->name('tracking');
 
+Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile');
+Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
 

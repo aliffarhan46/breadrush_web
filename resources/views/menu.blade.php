@@ -31,11 +31,20 @@
         <button id="darkToggle" aria-label="Toggle Tema">🌙</button>
 
         <div class="user-profile">
-            <span class="user-name">Halo, {{ Auth::user()->nama }}!</span>
+            <a href="{{ route('profile') }}" class="user-profile-link" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+                <div class="user-avatar" style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: #8b5e3c; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; border: 2px solid rgba(139,94,60,0.2);">
+                    @if (Auth::user()->foto_profile)
+                        <img src="{{ str_starts_with(Auth::user()->foto_profile, 'http') ? Auth::user()->foto_profile : asset(Auth::user()->foto_profile) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    @else
+                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                    @endif
+                </div>
+                <span class="user-name">Halo, {{ Auth::user()->nama }}!</span>
+            </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
-            <button type="button" class="logout-btn" onclick="document.getElementById('logout-form').submit();">
+            <button type="button" class="logout-btn" onclick="document.getElementById('logout-form').submit();" style="margin-left: 8px;">
                 Keluar
             </button>
         </div>

@@ -53,6 +53,7 @@ class AuthController extends Controller
         $nama = $request->query('nama');
         $email = $request->query('email');
         $password = $request->query('password');
+        $avatar = $request->query('avatar');
 
         if (empty($email) || empty($nama)) {
             return redirect()->route('register')->with('alert', 'Pilihan tidak valid!');
@@ -66,8 +67,12 @@ class AuthController extends Controller
             $user = User::create([
                 'nama' => $nama,
                 'email' => $email,
-                'password_users' => Hash::make($password),
+                'password_users' => Hash::make($password ?? 'admin123'),
+                'foto_profile' => $avatar,
             ]);
+        } else if ($avatar && empty($user->foto_profile)) {
+            $user->foto_profile = $avatar;
+            $user->save();
         }
 
         // Login user
@@ -79,6 +84,9 @@ class AuthController extends Controller
     public function googleLogin(Request $request)
     {
         $email = $request->query('email');
+        $nama = $request->query('nama');
+        $password = $request->query('password');
+        $avatar = $request->query('avatar');
 
         if (empty($email)) {
             return redirect()->route('login')->with('alert', 'Pilihan tidak valid!');
@@ -88,10 +96,25 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         if ($user) {
+            if ($avatar && empty($user->foto_profile)) {
+                $user->foto_profile = $avatar;
+                $user->save();
+            }
             // Login user
             Auth::login($user);
             return redirect()->route('home')->with('alert_success', 'Login Google berhasil!');
         } else {
+            // Jika belum ada, mari daftarkan otomatis agar UX lebih mulus
+            if (!empty($nama)) {
+                $user = User::create([
+                    'nama' => $nama,
+                    'email' => $email,
+                    'password_users' => Hash::make($password ?? 'admin123'),
+                    'foto_profile' => $avatar,
+                ]);
+                Auth::login($user);
+                return redirect()->route('home')->with('alert_success', 'Login Google berhasil!');
+            }
             return redirect()->route('login')->with('alert', 'Akun Google tidak ditemukan!');
         }
     }
