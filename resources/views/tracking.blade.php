@@ -411,12 +411,12 @@
                 'Pesanan dikirim' => '🛵',
                 'Pesanan selesai' => '🎉',
             ];
-            $bannerIcon = $icons[$tracking->status_tracking] ?? '📦';
+            $bannerIcon = $icons[$tracking->status_pesanan] ?? '📦';
         @endphp
         <div class="success-icon">{{ $bannerIcon }}</div>
         <div>
-            <h2>{{ $tracking->status_tracking }}</h2>
-            <p>Terima kasih, <strong>{{ $tracking->nama_pelanggan }}</strong>! Pesanan Anda sedang kami proses dengan penuh kasih sayang. 🍞</p>
+            <h2>{{ $tracking->status_pesanan }}</h2>
+            <p>Terima kasih, <strong>{{ $tracking->user->nama ?? 'Pelanggan' }}</strong>! Pesanan Anda sedang kami proses dengan penuh kasih sayang. 🍞</p>
             <div class="order-id-tag">
                 #TRX{{ str_pad($tracking->id, 6, '0', STR_PAD_LEFT) }}
             </div>
@@ -437,7 +437,7 @@
 
             $currentStep = 1;
             foreach ($steps as $num => $s) {
-                if ($tracking->status_tracking === $s['status']) {
+                if ($tracking->status_pesanan === $s['status']) {
                     $currentStep = $num;
                     break;
                 }
@@ -486,15 +486,15 @@
         <div class="details-grid">
             <div class="detail-block">
                 <div class="detail-label">Nama Pelanggan</div>
-                <div class="detail-value">{{ $tracking->nama_pelanggan }}</div>
+                <div class="detail-value">{{ $tracking->user->nama ?? '-' }}</div>
             </div>
             <div class="detail-block">
                 <div class="detail-label">Metode Pembayaran</div>
-                <div class="detail-value">{{ $tracking->metode_pembayaran }}</div>
+                <div class="detail-value">{{ $tracking->payment ? $tracking->payment->metode_pembayaran : '-' }}</div>
             </div>
             <div class="detail-block">
                 <div class="detail-label">Total Pembayaran</div>
-                <div class="detail-value highlight">Rp {{ number_format($tracking->total_bayar, 0, ',', '.') }}</div>
+                <div class="detail-value highlight">Rp {{ number_format($tracking->total_harga, 0, ',', '.') }}</div>
             </div>
             <div class="detail-block">
                 <div class="detail-label">Tanggal Pesanan</div>
@@ -515,22 +515,22 @@
     <div class="tracking-card">
         <div class="tracking-card-title">Roti yang Dipesan</div>
 
-        @if($tracking->items && count($tracking->items) > 0)
-            @foreach($tracking->items as $index => $item)
+        @if($tracking->orderDetails && count($tracking->orderDetails) > 0)
+            @foreach($tracking->orderDetails as $index => $item)
                 <div class="order-item" style="animation-delay: {{ $index * 0.1 }}s;">
                     <img class="order-item-img"
-                         src="{{ asset($item['gambar'] ?? 'Gambar/Menu/cinnamon.png') }}"
-                         alt="{{ $item['nama'] ?? 'Roti' }}"
+                         src="{{ asset($item->product->gambar ?? 'Gambar/Menu/cinnamon.png') }}"
+                         alt="{{ $item->product->nama_produk ?? 'Roti' }}"
                          onerror="this.src='{{ asset('Gambar/Menu/cinnamon.png') }}'">
                     <div class="order-item-info">
-                        <div class="order-item-name">{{ $item['nama'] ?? 'Roti Premium' }}</div>
+                        <div class="order-item-name">{{ $item->product->nama_produk ?? 'Roti Premium' }}</div>
                         <div class="order-item-qty">
-                            {{ $item['qty'] ?? 1 }} pcs ×
-                            Rp {{ number_format($item['harga'] ?? 0, 0, ',', '.') }}
+                            {{ $item->jumlah ?? 1 }} pcs ×
+                            Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
                         </div>
                     </div>
                     <div class="order-item-price">
-                        Rp {{ number_format(($item['harga'] ?? 0) * ($item['qty'] ?? 1), 0, ',', '.') }}
+                        Rp {{ number_format(($item->harga ?? 0) * ($item->jumlah ?? 1), 0, ',', '.') }}
                     </div>
                 </div>
             @endforeach

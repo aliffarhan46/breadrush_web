@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentTracking;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,25 +18,36 @@ class OrderController extends Controller
             'items' => 'required|array',
         ]);
 
-        // Create the tracking record
-        $order = new PaymentTracking([
-            'nama_pelanggan' => Auth::user()->nama,
-            'metode_pembayaran' => $request->metode_pembayaran,
-            'total_bayar' => $request->total_bayar,
-            'status_tracking' => 'Pesanan diterima',
-            'items' => $request->items,
+        // 1. Create Order
+        $order = Order::create([
+            'id_pengguna' => Auth::user()->id,
+            'total_harga' => $request->total_bayar,
+            'status_pesanan' => 'Pesanan diterima',
+            'tanggal_pesanan' => now(),
         ]);
+
+        // 2. Create Order Details
+        foreach ($request->items as $item) {
+            OrderDetail::create([
+                'id_pesanan' => $order->id,
+                'id_produk' => $item['id'],
+                'jumlah' => $item['qty'],
+                'harga' => $item['harga'],
+            ]);
+        }
         
-        $order->save();
-        
-        // Align id_transaksi with auto-increment ID to match legacy queries (SELECT * WHERE id_transaksi = '$id')
-        $order->id_transaksi = (string)$order->id;
-        $order->save();
+        // 3. Create Payment
+        Payment::create([
+            'id_pesanan' => $order->id,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'total_pembayaran' => $request->total_bayar,
+            'status_pembayaran' => 'Lunas', // or Pending depending on logic, let's say Lunas for simplicity
+        ]);
 
         return response()->json([
             'success' => true,
             'id' => $order->id,
-            'id_transaksi' => $order->id_transaksi
+            'id_transaksi' => $order->id
         ]);
     }
 
@@ -42,7 +55,8 @@ class OrderController extends Controller
     {
         // If no ID is passed, fetch the latest order for this user
         if (!$id) {
-            $tracking = PaymentTracking::where('nama_pelanggan', Auth::user()->nama)
+            $tracking = Order::with(['orderDetails.product', 'payment', 'user'])
+                ->where('id_pengguna', Auth::user()->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -52,9 +66,9 @@ class OrderController extends Controller
             return redirect()->route('tracking', ['id' => $tracking->id]);
         }
 
-        // Fetch order by id or id_transaksi to support both integer IDs and transaction codes
-        $tracking = PaymentTracking::where('id', $id)
-            ->orWhere('id_transaksi', $id)
+        // Fetch order by id
+        $tracking = Order::with(['orderDetails.product', 'payment', 'user'])
+            ->where('id', $id)
             ->first();
 
         if (!$tracking) {

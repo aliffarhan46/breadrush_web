@@ -38,7 +38,7 @@ class AuthController extends Controller
         User::create([
             'nama' => $nama,
             'email' => $email,
-            'password_users' => Hash::make($password),
+            'kata_sandi' => Hash::make($password),
         ]);
 
         // Jangan login otomatis; arahkan ke login untuk keamanan
@@ -62,7 +62,7 @@ class AuthController extends Controller
             $user = User::create([
                 'nama' => $nama,
                 'email' => $email,
-                'password_users' => Hash::make($password ?? 'admin123'),
+                'kata_sandi' => Hash::make($password ?? 'admin123'),
                 'foto_profile' => $avatar,
             ]);
         } else if ($avatar && empty($user->foto_profile)) {
@@ -98,7 +98,7 @@ class AuthController extends Controller
                 $user = User::create([
                     'nama' => $nama,
                     'email' => $email,
-                    'password_users' => Hash::make($password ?? 'admin123'),
+                    'kata_sandi' => Hash::make($password ?? 'admin123'),
                     'foto_profile' => $avatar,
                 ]);
                 return redirect()->route('login')->with('alert_success', 'Akun Google berhasil dibuat. Silakan login terlebih dahulu.');
@@ -123,7 +123,7 @@ class AuthController extends Controller
         // Cari user berdasarkan email
         $user = User::where('email', $email)->first();
 
-        if ($user && Hash::check($password, $user->password_users)) {
+        if ($user && Hash::check($password, $user->kata_sandi)) {
             Auth::login($user);
             return redirect()->route('home')->with('alert_success', 'Login berhasil!');
         }

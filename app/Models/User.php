@@ -13,8 +13,6 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $primaryKey = 'id_users';
-
     public $timestamps = false;
 
     /**
@@ -25,7 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nama',
         'email',
-        'password_users',
+        'kata_sandi',
         'foto_profile',
     ];
 
@@ -35,7 +33,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password_users',
+        'kata_sandi',
         'remember_token',
     ];
 
@@ -48,7 +46,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password_users' => 'hashed',
+            'kata_sandi' => 'hashed',
         ];
     }
 
@@ -57,6 +55,6 @@ class User extends Authenticatable
      */
     public function getAuthPassword()
     {
-        return $this->password_users;
+        return $this->kata_sandi;
     }
 }

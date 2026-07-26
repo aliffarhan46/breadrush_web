@@ -296,7 +296,7 @@
             <div class="profile-info">
                 <h1>{{ $user->nama }}</h1>
                 <p>{{ $user->email }}</p>
-                <p style="margin-top: 4px; font-size: 12px; opacity: 0.8;">Metode Login: {{ str_starts_with($user->password_users, '$2y$') || str_starts_with($user->password_users, '$2x$') ? 'Email & Password' : 'Google Authentication' }}</p>
+                <p style="margin-top: 4px; font-size: 12px; opacity: 0.8;">Metode Login: {{ str_starts_with($user->kata_sandi, '$2y$') || str_starts_with($user->kata_sandi, '$2x$') ? 'Email & Password' : 'Google Authentication' }}</p>
             </div>
         </div>
 

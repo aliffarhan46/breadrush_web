@@ -39,7 +39,7 @@ class ProfileController extends Controller
         ]);
 
         // Cari user di database menggunakan instance model agar save() berfungsi dengan benar
-        $dbUser = User::find($user->id_users);
+        $dbUser = User::find($user->id);
         if (!$dbUser) {
             return back()->with('alert', 'Pengguna tidak ditemukan.');
         }
@@ -48,7 +48,7 @@ class ProfileController extends Controller
 
         // Ganti password jika diisi
         if ($request->filled('password')) {
-            $dbUser->password_users = Hash::make($request->input('password'));
+            $dbUser->kata_sandi = Hash::make($request->input('password'));
         }
 
         // Tangani unggahan foto profil
